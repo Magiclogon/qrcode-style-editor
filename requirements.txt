@@ -1,0 +1,5 @@
+regex>=2023.8.8
+pyqt5>=5.15.9
+pyqt5-tools>=5.15.9.3.3
+qrcode>=7.4.2
+pillow>=10.0.0
