@@ -9,4 +9,8 @@ Adding functionalities that I didn't think about or making suggestions of potent
 
 # How to use?
 Very simple, you should start by installing the requirements and this using this command:  
-`pip install -r \path\requirements.txt`
+  
+`pip install -r \path\requirements.txt`  
+  
+And here you go.
+
