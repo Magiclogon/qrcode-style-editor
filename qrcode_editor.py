@@ -349,14 +349,26 @@ class QrCode(QWidget):
         qr.make(fit=True)
         qrcode_image = qr.make_image(image_factory=StyledPilImage, module_drawer=shape_par, color_mask=colormask_par, embeded_image_path=img_path_par)
         self.canBeSaved = True
-        qrcode_image.save('pixmappp.png')
+        qrcode_image.save('your-qrcode.png')
         self.qrcode_save_img = qrcode_image
-        self.qrcode_img.setPixmap(QPixmap('pixmappp.png'))
 
+        # Resizing Image if size bigger than 400x400
+        image = Image.open('your-qrcode.png')
+        image_size = image.size
+        if image_size > (400, 400):
+            qrcode_pixmap = image.resize((400, 400))
+            qrcode_pixmap.save('pixmap.png')
+            self.qrcode_img.setPixmap(QPixmap('pixmap.png'))
+        else:
+            image.save('pixmap.png')
+            self.qrcode_img.setPixmap(QPixmap('pixmap.png'))
+
+    # Clicked save button
     def clicked_save(self):
         if self.canBeSaved:
             saving_path, _ = QFileDialog.getSaveFileName(self, 'Save file', "", "Image file (*.png)")
             self.qrcode_save_img.save(saving_path)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
