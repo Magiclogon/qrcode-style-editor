@@ -1,4 +1,7 @@
 # Change log
 
-## - 1.0.0 (Initial release) :
+## - v1.1.0 :
+Adding qrcode saving capabilitie.
+  
+## - v1.0.0 (Initial release) :
 First release.
