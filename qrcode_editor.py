@@ -146,6 +146,11 @@ class QrCode(QWidget):
         self.apply_btn = QPushButton("Apply")
         self.form_layout.addWidget(self.apply_btn)
 
+        self.spacer7 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Maximum)
+        self.form_layout.addItem(self.spacer7)
+        self.saveimg_btn = QPushButton("Save image")
+        self.form_layout.addWidget(self.saveimg_btn)
+
         self.spacer5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.form_layout.addItem(self.spacer5)
 
@@ -160,11 +165,14 @@ class QrCode(QWidget):
         self.openimg_btn.clicked.connect(self.select_image)
         self.colormask_comboBox.currentIndexChanged.connect(self.selected_imgmask)
         self.colormaskimg_btn.clicked.connect(self.select_imgmask)
+        self.saveimg_btn.clicked.connect(self.clicked_save)
 
         self.setLayout(self.main_layout)
 
         self.selected_image_path = ""
         self.selected_imgmask_path = ""
+        self.canBeSaved = False
+        self.qrcode_save_img = None
 
     # What to show depending on colormask Combo BOX
     def selected_imgmask(self):
@@ -326,8 +334,7 @@ class QrCode(QWidget):
             case 5:
                 if self.selected_imgmask_path != "":
                     colormask_par = ImageColorMask(back_color=rgb_background_par, color_mask_path=self.selected_imgmask_path)
-                else:
-                    colormask_par = ImageColorMask(back_color=rgb_background_par, color_mask_path=None)
+
 
         if self.addimg_checkbox.isChecked() and self.selected_image_path != "":
             version_par = 3
@@ -340,13 +347,16 @@ class QrCode(QWidget):
         qr = qrcode.QRCode(version=version_par, error_correction=error_cor_par)
         qr.add_data(data)
         qr.make(fit=True)
-        qrcode_img = qr.make_image(image_factory=StyledPilImage, module_drawer=shape_par, color_mask=colormask_par, embeded_image_path=img_path_par)
-        qrcode_img.save('ooo.png')
-        self.qrcode_img.setPixmap(QPixmap('ooo.png'))
+        qrcode_image = qr.make_image(image_factory=StyledPilImage, module_drawer=shape_par, color_mask=colormask_par, embeded_image_path=img_path_par)
+        self.canBeSaved = True
+        qrcode_image.save('pixmappp.png')
+        self.qrcode_save_img = qrcode_image
+        self.qrcode_img.setPixmap(QPixmap('pixmappp.png'))
 
-
-
-
+    def clicked_save(self):
+        if self.canBeSaved:
+            saving_path, _ = QFileDialog.getSaveFileName(self, 'Save file', "", "Image file (*.png)")
+            self.qrcode_save_img.save(saving_path)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
