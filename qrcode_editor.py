@@ -105,22 +105,39 @@ class QrCode(QWidget):
         self.hlayout3.addWidget(self.colormaskimg_btn)
         self.form_layout.addRow(self.colormaskimg_label, self.hlayout3)
 
+
         self.color_from_label = QLabel("Fill color (HEX):")
         self.color_from_label.setFont(settings_font)
+        self.hlayout4 = QHBoxLayout()
         self.color_from_edit = QLineEdit()
-        self.form_layout.addRow(self.color_from_label, self.color_from_edit)
+        self.color_from_btn = QPushButton("...")
+        self.color_from_btn.setMaximumSize(20,20)
+        self.hlayout4.addWidget(self.color_from_edit)
+        self.hlayout4.addWidget(self.color_from_btn)
+        self.form_layout.addRow(self.color_from_label, self.hlayout4)
 
         self.color_to_label = QLabel("Fill color (HEX):")
         self.color_to_label.setFont(settings_font)
         self.color_to_label.hide()
+        self.hlayout5 = QHBoxLayout()
         self.color_to_edit = QLineEdit()
         self.color_to_edit.hide()
-        self.form_layout.addRow(self.color_to_label, self.color_to_edit)
+        self.color_to_btn = QPushButton("...")
+        self.color_to_btn.setMaximumSize(20, 20)
+        self.color_to_btn.hide()
+        self.hlayout5.addWidget(self.color_to_edit)
+        self.hlayout5.addWidget(self.color_to_btn)
+        self.form_layout.addRow(self.color_to_label, self.hlayout5)
 
         self.background_label = QLabel("Background (HEX):")
         self.background_label.setFont(settings_font)
+        self.hlayout6 = QHBoxLayout()
         self.background_edit = QLineEdit()
-        self.form_layout.addRow(self.background_label, self.background_edit)
+        self.background_btn = QPushButton("...")
+        self.background_btn.setMaximumSize(20, 20)
+        self.hlayout6.addWidget(self.background_edit)
+        self.hlayout6.addWidget(self.background_btn)
+        self.form_layout.addRow(self.background_label, self.hlayout6)
 
 
         self.addimg_label = QLabel("Add image:")
@@ -131,15 +148,15 @@ class QrCode(QWidget):
         self.openimg_label = QLabel("Image:")
         self.openimg_label.setFont(settings_font)
         self.openimg_label.hide()
-        self.hlayout4 = QHBoxLayout()
+        self.hlayout7 = QHBoxLayout()
         self.openimg_path_edit = QLineEdit()
         self.openimg_path_edit.setReadOnly(True)
         self.openimg_path_edit.hide()
-        self.hlayout4.addWidget(self.openimg_path_edit)
+        self.hlayout7.addWidget(self.openimg_path_edit)
         self.openimg_btn = QPushButton("Select image")
         self.openimg_btn.hide()
-        self.hlayout4.addWidget(self.openimg_btn)
-        self.form_layout.addRow(self.openimg_label, self.hlayout4)
+        self.hlayout7.addWidget(self.openimg_btn)
+        self.form_layout.addRow(self.openimg_label, self.hlayout7)
 
         self.spacer6 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Maximum)
         self.form_layout.addItem(self.spacer6)
@@ -166,6 +183,9 @@ class QrCode(QWidget):
         self.colormask_comboBox.currentIndexChanged.connect(self.selected_imgmask)
         self.colormaskimg_btn.clicked.connect(self.select_imgmask)
         self.saveimg_btn.clicked.connect(self.clicked_save)
+        self.color_from_btn.clicked.connect(self.pick_from_color)
+        self.color_to_btn.clicked.connect(self.pick_to_color)
+        self.background_btn.clicked.connect(self.pick_background)
 
         self.setLayout(self.main_layout)
 
@@ -183,8 +203,10 @@ class QrCode(QWidget):
                 self.colormaskimg_path_edit.hide()
                 self.color_to_label.hide()
                 self.color_to_edit.hide()
+                self.color_to_btn.hide()
                 self.color_from_label.show()
                 self.color_from_edit.show()
+                self.color_from_btn.show()
                 self.color_from_label.setText("Fill Color (HEX):")
 
             case 1:
@@ -193,8 +215,10 @@ class QrCode(QWidget):
                 self.colormaskimg_path_edit.hide()
                 self.color_to_label.show()
                 self.color_to_edit.show()
+                self.color_to_btn.show()
                 self.color_from_label.show()
                 self.color_from_edit.show()
+                self.color_from_btn.show()
                 self.color_from_label.setText("Center color (HEX):")
                 self.color_to_label.setText("Edge color (HEX):")
 
@@ -204,8 +228,10 @@ class QrCode(QWidget):
                 self.colormaskimg_path_edit.hide()
                 self.color_to_label.show()
                 self.color_to_edit.show()
+                self.color_to_btn.show()
                 self.color_from_label.show()
                 self.color_from_edit.show()
+                self.color_from_btn.show()
                 self.color_from_label.setText("Center color (HEX):")
                 self.color_to_label.setText("Edge color (HEX):")
 
@@ -215,8 +241,10 @@ class QrCode(QWidget):
                 self.colormaskimg_path_edit.hide()
                 self.color_to_label.show()
                 self.color_to_edit.show()
+                self.color_to_btn.show()
                 self.color_from_label.show()
                 self.color_from_edit.show()
+                self.color_from_btn.show()
                 self.color_from_label.setText("Top color (HEX):")
                 self.color_to_label.setText("Bottom color (HEX):")
 
@@ -226,8 +254,10 @@ class QrCode(QWidget):
                 self.colormaskimg_path_edit.hide()
                 self.color_to_label.show()
                 self.color_to_edit.show()
+                self.color_to_btn.show()
                 self.color_from_label.show()
                 self.color_from_edit.show()
+                self.color_from_btn.show()
                 self.color_from_label.setText("Left color (HEX):")
                 self.color_to_label.setText("Right color (HEX):")
 
@@ -237,8 +267,23 @@ class QrCode(QWidget):
                 self.colormaskimg_path_edit.show()
                 self.color_to_label.hide()
                 self.color_to_edit.hide()
+                self.color_to_btn.hide()
                 self.color_from_label.hide()
                 self.color_from_edit.hide()
+                self.color_from_btn.hide()
+
+    # Setting colors with QColorDialog
+    def pick_from_color(self):
+        color = QColorDialog.getColor()
+        self.color_from_edit.setText(color.name())
+
+    def pick_to_color(self):
+        color = QColorDialog.getColor()
+        self.color_to_edit.setText(color.name())
+
+    def pick_background(self):
+        color = QColorDialog.getColor()
+        self.background_edit.setText(color.name())
 
     # Select color mask image
     def select_imgmask(self):
