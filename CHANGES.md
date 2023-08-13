@@ -1,5 +1,8 @@
 # Change log
 
+## - v1.2.0 :
+Adding color picker to select colors.
+
 ## - v1.1.1 :
 Fixing a problem where the generated qrcode is too big and cannot be displayed entirely on the window.
 
