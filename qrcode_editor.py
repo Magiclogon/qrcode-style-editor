@@ -412,7 +412,8 @@ class QrCode(QWidget):
     def clicked_save(self):
         if self.canBeSaved:
             saving_path, _ = QFileDialog.getSaveFileName(self, 'Save file', "", "Image file (*.png)")
-            self.qrcode_save_img.save(saving_path)
+            if saving_path != "":
+                self.qrcode_save_img.save(saving_path)
 
 
 if __name__ == '__main__':
