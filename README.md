@@ -8,7 +8,7 @@ As said before, it uses the [qrcode](https://pypi.org/project/qrcode/) python li
 Adding functionalities that I didn't think about or making suggestions of potential useful features to be added.
 
 # How to use?
-Very simple, you should start by installing the requirements and this using this command:  
+Very simple, you should start by installing the requirements and this by using this command:  
   
 `pip install -r \path\requirements.txt`  
   
