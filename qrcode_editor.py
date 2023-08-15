@@ -6,6 +6,7 @@ from PyQt5.QtCore import Qt
 from qrcode.image.styles.moduledrawers.pil import *
 from qrcode.image.styledpil import StyledPilImage
 from qrcode.image.styles.colormasks import *
+import cv2
 from PIL import ImageColor
 import re
 
@@ -31,7 +32,7 @@ class QrCode(QWidget):
 
         # Title
         self.title = QLabel()
-        self.title.setText("QrCode Editor")
+        self.title.setText("QrCode tools")
         self.title.setFont(QFont('Bahnschrift', 18))
         self.title.setAlignment(Qt.AlignCenter)
         self.main_layout.addWidget(self.title)
@@ -40,9 +41,20 @@ class QrCode(QWidget):
         self.spacer1 = QSpacerItem(20, 50, QSizePolicy.Minimum, QSizePolicy.Maximum)
         self.main_layout.addItem(self.spacer1)
 
+        # Creating tabs:
+        self.tabs = QTabWidget(self)
+        self.tab1 = QWidget(self)
+        self.tab2 = QWidget(self)
+        self.main_layout.addWidget(self.tabs)
+        self.tabs.addTab(self.tab1, "Edit Qrcode")
+        self.tabs.addTab(self.tab2, "Scan Qrcode")
+
+        # --------- TAB 1 ---------
+
+
         # Create horizontal layout
         self.h_layout1 = QHBoxLayout()
-        self.main_layout.addLayout(self.h_layout1)
+        self.tab1.setLayout(self.h_layout1)
 
         # Creating the two widgets
         self.qrcode_widget = QWidget(self)
@@ -63,7 +75,6 @@ class QrCode(QWidget):
         self.h_layout2.addItem(self.spacer2)
         self.qrcode_img = QLabel()
         self.qrcode_img.setText("")
-        self.qrcode_img.setPixmap(QPixmap('YourQrn.png'))
         self.qrcode_img.setAlignment(Qt.AlignCenter)
         self.h_layout2.addWidget(self.qrcode_img)
         self.spacer3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -114,7 +125,7 @@ class QrCode(QWidget):
         self.hlayout4 = QHBoxLayout()
         self.color_from_edit = QLineEdit()
         self.color_from_btn = QPushButton("...")
-        self.color_from_btn.setMaximumSize(20,20)
+        self.color_from_btn.setMaximumSize(20, 20)
         self.hlayout4.addWidget(self.color_from_edit)
         self.hlayout4.addWidget(self.color_from_btn)
         self.form_layout.addRow(self.color_from_label, self.hlayout4)
@@ -175,10 +186,12 @@ class QrCode(QWidget):
         self.form_layout.addItem(self.spacer5)
 
         # Adding notes:
-        self.note = QLabel("**Note that adding images while keeping a lower error correction can make the qrcode unreadable**")
-        self.note.setFont(QFont("Bahnschrift", 10))
-        self.note.setAlignment(Qt.AlignCenter)
-        self.v_settingslayout.addWidget(self.note)
+        self.note1 = QLabel("**The qrcode preview is caped at 400x400 pixels. Saving qrcode saves it in it's original size**")
+        self.note1.setFont(QFont("Bahnschrift", 10))
+        self.note2 = QLabel("**Note that adding images while keeping a lower error correction can make the qrcode unreadable**")
+        self.note2.setFont(QFont("Bahnschrift", 10))
+        self.v_settingslayout.addWidget(self.note1, alignment=Qt.AlignCenter)
+        self.v_settingslayout.addWidget(self.note2, alignment=Qt.AlignCenter)
         self.spacer8 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
 
@@ -198,8 +211,86 @@ class QrCode(QWidget):
         self.color_to_btn.clicked.connect(self.pick_to_color)
         self.background_btn.clicked.connect(self.pick_background)
 
+        # --------- TAB 2 ---------
+
+        # Adding main layout
+        self.mainlayout_tab2 = QVBoxLayout()
+        self.tab2.setLayout(self.mainlayout_tab2)
+
+        # Selecting qrcode
+        self.hlayout8 = QHBoxLayout()
+        self.spacer9 = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.select_qrcode_label = QLabel("Select qrcode:")
+        self.select_qrcode_label.setFont(settings_font)
+        self.select_qrcode_edit = QLineEdit()
+        self.select_qrcode_edit.setReadOnly(True)
+        self.select_qrcode_btn = QPushButton("Select")
+        self.spacer10 = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.hlayout8.addItem(self.spacer9)
+        self.hlayout8.addWidget(self.select_qrcode_label)
+        self.hlayout8.addWidget(self.select_qrcode_edit)
+        self.hlayout8.addWidget(self.select_qrcode_btn)
+        self.hlayout8.addItem(self.spacer10)
+        self.mainlayout_tab2.addLayout(self.hlayout8)
+
+        # Creating widget
+        self.hWidgetLayout = QHBoxLayout()
+        self.mainlayout_tab2.addLayout(self.hWidgetLayout)
+
+        self.left_widget = QWidget(self.tab2)
+        self.right_widget = QWidget(self.tab2)
+        self.hWidgetLayout.addWidget(self.left_widget)
+        self.hWidgetLayout.addWidget(self.right_widget)
+
+        # Populating right widget
+        self.hlayout9 = QHBoxLayout()
+        self.spacer11 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.selected_qrcode_img = QLabel()
+        self.selected_qrcode_img.setText("")
+        self.selected_qrcode_img.setAlignment(Qt.AlignCenter)
+        self.spacer12 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.hlayout9.addItem(self.spacer11)
+        self.hlayout9.addWidget(self.selected_qrcode_img)
+        self.hlayout9.addItem(self.spacer12)
+        self.left_widget.setLayout(self.hlayout9)
+
+        # Populating right widget
+        self.vlayout = QVBoxLayout()
+        self.spacer13 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.decoded_label = QLabel("Decoded:")
+        self.decoded_label.setFont(settings_font)
+        self.decoded_text = QTextEdit()
+        self.decoded_text.setReadOnly(True)
+        self.decode_copy_btnBox = QDialogButtonBox(Qt.Horizontal)
+        self.decode_btn = QPushButton("Decode")
+        self.copy_btn = QPushButton("Copy")
+        self.decode_copy_btnBox.addButton(self.decode_btn, QDialogButtonBox.ActionRole)
+        self.decode_copy_btnBox.addButton(self.copy_btn, QDialogButtonBox.ActionRole)
+        self.spacer14 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.vlayout.addItem(self.spacer13)
+        self.vlayout.addWidget(self.decoded_label)
+        self.vlayout.addWidget(self.decoded_text)
+        self.vlayout.addWidget(self.decode_copy_btnBox)
+        self.vlayout.addItem(self.spacer14)
+
+        self.note2 = QLabel("**It can also detect qrcodes within images**")
+        self.note2.setFont(QFont("Bahnschrift", 10))
+        self.vlayout.addWidget(self.note2, alignment=Qt.AlignCenter)
+        self.right_widget.setLayout(self.vlayout)
+
+        # BUTTONS BINDINGS
+        self.select_qrcode_btn.clicked.connect(self.clicked_select)
+        self.copy_btn.clicked.connect(self.clicked_copy)
+        self.decode_btn.clicked.connect(self.clicked_decode)
+
+
         self.setLayout(self.main_layout)
 
+
+        # VARIABLES USED BY METHODS
         self.selected_image_path = ""
         self.selected_imgmask_path = ""
         self.canBeSaved = False
@@ -319,6 +410,16 @@ class QrCode(QWidget):
             self.openimg_btn.hide()
             self.openimg_path_edit.hide()
 
+    # Check size.
+    def check_resize_image(self, width, height, image):
+        image_size = image.size
+        if image_size[0] > width or image_size[1] > height:
+            final_image = image.resize((400, 400))
+        else:
+            final_image = image
+
+        return final_image
+
     # Clicked apply button
     def clicked_apply(self):
 
@@ -410,14 +511,9 @@ class QrCode(QWidget):
 
         # Resizing Image if size bigger than 400x400
         image = Image.open('your-qrcode.png')
-        image_size = image.size
-        if image_size > (400, 400):
-            qrcode_pixmap = image.resize((400, 400))
-            qrcode_pixmap.save('pixmap.png')
-            self.qrcode_img.setPixmap(QPixmap('pixmap.png'))
-        else:
-            image.save('pixmap.png')
-            self.qrcode_img.setPixmap(QPixmap('pixmap.png'))
+        qrcode_pixmap = self.check_resize_image(400, 400, image)
+        qrcode_pixmap.save('pixmap.png')
+        self.qrcode_img.setPixmap(QPixmap('pixmap.png'))
 
     # Clicked save button
     def clicked_save(self):
@@ -425,6 +521,31 @@ class QrCode(QWidget):
             saving_path, _ = QFileDialog.getSaveFileName(self, 'Save file', "", "Image file (*.png)")
             if saving_path != "":
                 self.qrcode_save_img.save(saving_path)
+
+    # -------- TAB 2 METHODS --------
+
+    # Clicking select
+    def clicked_select(self):
+        qrcode_path, _ = QFileDialog.getOpenFileName(self, "Open qrcode", "", "Image files (*.png *.jpg *.jpeg)")
+        self.select_qrcode_edit.setText(qrcode_path)
+        if qrcode_path != "":
+            image = Image.open(qrcode_path)
+            qrcode_pixmap = self.check_resize_image(400, 400, image)
+            qrcode_pixmap.save('selected.png')
+            self.selected_qrcode_img.setPixmap(QPixmap('selected.png'))
+
+    # Clicking copy
+    def clicked_copy(self):
+        self.decoded_text.copy()
+
+    # Clicking decode
+    def clicked_decode(self):
+        if self.select_qrcode_edit.text() != "":
+            path = self.select_qrcode_edit.text()
+            img = cv2.imread(path)
+            detector = cv2.QRCodeDetector()
+            data, _, _ = detector.detectAndDecode(img)
+            self.decoded_text.setText(data)
 
 
 if __name__ == '__main__':
