@@ -1,5 +1,8 @@
 # Change log
 
+## - v1.3.0 :
+Adding qrcode reader feature.
+
 ## - v1.2.0 :
 Adding color picker to select colors.
 
