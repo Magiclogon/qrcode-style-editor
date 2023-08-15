@@ -1,6 +1,6 @@
 # qrcode-style-editor
-A GUI application made with PyQt5 to customize qrcodes based on the [qrcode](https://pypi.org/project/qrcode/) python library.
-
+A GUI application made with PyQt5 to customize qrcodes based on the [qrcode](https://pypi.org/project/qrcode/) python library. It's also able de read qrcodes from images.  
+  
 It can be used to create Qrcodes, customize them and save them while getting a preview of it before saving it.  
 As said before, it uses the [qrcode](https://pypi.org/project/qrcode/) python library to create and customize to Qrcodes.
 
@@ -12,5 +12,5 @@ Very simple, you should start by installing the requirements and this by using t
   
 `pip install -r \path\requirements.txt`  
   
-And here you go.
+And here you go the GUI is very simple to use.
 
