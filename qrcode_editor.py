@@ -51,9 +51,12 @@ class QrCode(QWidget):
         self.h_layout1.addWidget(self.qrcode_widget)
 
         self.settings_widget = QWidget(self)
-        self.form_layout = QFormLayout(self.settings_widget)
-        self.settings_widget.setLayout(self.form_layout)
+        self.v_settingslayout = QVBoxLayout(self.settings_widget)
+        self.settings_widget.setLayout(self.v_settingslayout)
         self.h_layout1.addWidget(self.settings_widget)
+
+        self.form_layout = QFormLayout()
+        self.v_settingslayout.addLayout(self.form_layout)
 
         # Populating qrcode_widget
         self.spacer2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -170,6 +173,14 @@ class QrCode(QWidget):
 
         self.spacer5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.form_layout.addItem(self.spacer5)
+
+        # Adding notes:
+        self.note = QLabel("**Note that adding images while keeping a lower error correction can make the qrcode unreadable**")
+        self.note.setFont(QFont("Bahnschrift", 10))
+        self.note.setAlignment(Qt.AlignCenter)
+        self.v_settingslayout.addWidget(self.note)
+        self.spacer8 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
 
         # Populating ComboBoxes
         self.error_comboBox.addItems(["Low error correction ~ 7%", "Medium error correction ~ 15%", "Decent error correction ~ 25%", "High error correction ~ 30%"])
